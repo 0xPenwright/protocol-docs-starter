@@ -1,0 +1,53 @@
+# Read a balance
+
+Get the protocol balance of an account.
+
+```ts twoslash
+// @noErrors
+import { createPublicClient, http } from "viem";
+import { base } from "viem/chains";
+
+const client = createPublicClient({ chain: base, transport: http() });
+
+const vaultAbi = [
+  {
+    type: "function", stateMutability: "view",
+    name: "balanceOf",
+    inputs:  [{ name: "account", type: "address" }],
+    outputs: [{ name: "shares",  type: "uint256" }],
+  },
+] as const;
+
+const shares = await client.readContract({
+  address:      "0xBaseVaultAddressHere",
+  abi:          vaultAbi,
+  functionName: "balanceOf",
+  args:         ["0xUserAddressHere"],
+});
+
+console.log(`User holds ${shares} shares`);
+```
+
+## Reading multiple values in one round trip
+
+For dashboards, use `multicall` instead of N sequential reads.
+
+```ts twoslash
+// @noErrors
+import { client } from "./_client";
+import { vaultAbi } from "./_abi";
+import { ACME_VAULT } from "./_addresses";
+
+const accounts = ["0xa...", "0xb...", "0xc..."] as const;
+
+const balances = await client.multicall({
+  contracts: accounts.map((account) => ({
+    address:      ACME_VAULT,
+    abi:          vaultAbi,
+    functionName: "balanceOf",
+    args:         [account] as const,
+  })),
+});
+```
+
+Single round-trip, single RPC charge, all results in one array.

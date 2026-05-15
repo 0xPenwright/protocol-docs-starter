@@ -1,0 +1,69 @@
+# Quickstart
+
+Five minutes from `npm install` to a working transaction against Acme Protocol.
+
+## 1. Install
+
+```bash
+npm install viem
+```
+
+## 2. Connect a client
+
+```ts twoslash
+import { createPublicClient, http } from "viem";
+import { base } from "viem/chains";
+
+export const client = createPublicClient({
+  chain: base,
+  transport: http(),
+});
+```
+
+## 3. Read protocol state
+
+```ts twoslash
+// @noErrors
+import { client } from "./_client";
+import { ACME_VAULT } from "./_addresses";
+import { vaultAbi } from "./_abi";
+
+const totalAssets = await client.readContract({
+  address:      ACME_VAULT,
+  abi:          vaultAbi,
+  functionName: "totalAssets",
+});
+
+console.log(`Total locked in vault: ${totalAssets}`);
+```
+
+## 4. Send a transaction
+
+```ts twoslash
+// @noErrors
+import { createWalletClient, custom, parseUnits } from "viem";
+import { base } from "viem/chains";
+import { ACME_VAULT, USDC } from "./_addresses";
+import { vaultAbi } from "./_abi";
+
+const wallet = createWalletClient({
+  chain:     base,
+  transport: custom(window.ethereum!),
+});
+
+const [account] = await wallet.requestAddresses();
+
+const hash = await wallet.writeContract({
+  account,
+  address:      ACME_VAULT,
+  abi:          vaultAbi,
+  functionName: "deposit",
+  args:         [parseUnits("100", 6), account],
+});
+```
+
+That's it. Continue to [Examples](/examples/read-balance) for end-to-end snippets, or [API reference](/reference/api) for every function.
+
+:::tip
+The starter does **not** ship a global `WalletConnect` setup. Most protocols have opinions on which wallet UX library they recommend (RainbowKit, ConnectKit, Privy, Dynamic), and the examples here stay neutral by using `window.ethereum`. Swap in your library of choice in your fork.
+:::

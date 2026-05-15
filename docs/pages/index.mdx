@@ -1,0 +1,68 @@
+---
+title:       Acme Protocol Docs
+description: A starter template for Web3 protocol documentation
+---
+
+# Acme Protocol
+
+A starter template for documenting Web3 protocols the way developers actually want to read them.
+
+::::steps
+
+### Fork & rename
+
+```bash
+gh repo fork 0xPenwright/protocol-docs-starter --clone --remote
+```
+
+Edit five fields in `vocs.config.ts` (title, description, social links, sidebar, GitHub URL). That's it for branding.
+
+### Drop in your contracts
+
+Put your Solidity sources in `contracts/`. NatSpec on every external function. Run `npm run gen:api` to generate `docs/pages/reference/api.mdx` from `@notice` / `@param` / `@return` tags.
+
+### Write three examples
+
+The starter ships with three runnable Viem snippets (read a balance, send a transaction, listen to events). Replace them with snippets specific to your contracts and you have docs people will share.
+
+### Deploy
+
+```bash
+npm run deploy
+```
+
+Pushes to `gh-pages`. Your docs are live at `https://<username>.github.io/<repo>/`. CI also rebuilds on every push to `main`.
+
+::::
+
+## Why this exists
+
+Most protocol docs are either: a hosted Notion page, a stale Gitbook, or a sprawling Docusaurus site nobody finished. This starter is opinionated:
+
+- **One config file** drives identity, branding, navigation
+- **NatSpec is the source of truth** for the API reference — write it once, generate the page automatically
+- **All code blocks use Viem** with Twoslash type previews — readers see types on hover, the same as in their editor
+- **Built with [Vocs](https://vocs.dev/)** — Vite-fast, React-based, the same toolchain that ships [viem](https://viem.sh/) and [wagmi](https://wagmi.sh/) docs
+
+## What's in the template
+
+```
+docs/pages/
+├── index.mdx                   ← this file
+├── quickstart.mdx              ← 5-minute integration
+├── installation.mdx            ← npm + RPC + chain config
+├── examples/
+│   ├── read-balance.mdx
+│   ├── send-transaction.mdx
+│   └── listen-to-events.mdx
+└── reference/
+    └── api.mdx                 ← regenerated from contracts/*.sol
+
+scripts/
+└── generate-api-reference.ts   ← NatSpec parser
+
+contracts/
+└── ExampleVault.sol            ← sample contract driving the reference page
+
+vocs.config.ts                  ← change five fields when forking
+```

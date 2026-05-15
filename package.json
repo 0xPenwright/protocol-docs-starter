@@ -1,0 +1,29 @@
+{
+  "name": "protocol-docs-starter",
+  "version": "0.1.0",
+  "description": "Opinionated docs starter for Web3 protocols: Vocs + Viem + Twoslash + a tiny NatSpec → MDX generator.",
+  "license": "MIT",
+  "author": "0xPenwright",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/0xPenwright/protocol-docs-starter.git"
+  },
+  "scripts": {
+    "dev":     "vocs dev",
+    "build":   "npm run gen:api && vocs build",
+    "preview": "vocs preview",
+    "gen:api": "tsx scripts/generate-api-reference.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node":      "^20.17.10",
+    "@types/react":     "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "react":            "^18.3.1",
+    "react-dom":        "^18.3.1",
+    "tsx":              "^4.19.2",
+    "typescript":       "^5.4.5",
+    "viem":             "^2.21.55",
+    "vocs":             "^1.4.1"
+  }
+}

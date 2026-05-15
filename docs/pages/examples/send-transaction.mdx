@@ -1,0 +1,53 @@
+# Send a transaction
+
+Deposit USDC into the vault. The flow is two steps because ERC-20 requires `approve` before `transferFrom`.
+
+```ts twoslash
+// @noErrors
+import { createWalletClient, custom, parseUnits, maxUint256 } from "viem";
+import { base } from "viem/chains";
+
+const wallet = createWalletClient({
+  chain:     base,
+  transport: custom(window.ethereum!),
+});
+
+const [account] = await wallet.requestAddresses();
+const usdcAddr  = "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913";  // Base USDC
+const vaultAddr = "0xBaseVaultAddressHere";
+const amount    = parseUnits("100", 6);                          // 100 USDC
+
+// Step 1: approve the vault to pull USDC
+await wallet.writeContract({
+  account,
+  address: usdcAddr,
+  abi: [
+    { name: "approve", type: "function", stateMutability: "nonpayable",
+      inputs:  [{ name: "spender", type: "address" }, { name: "amount", type: "uint256" }],
+      outputs: [{ name: "", type: "bool" }] },
+  ],
+  functionName: "approve",
+  args: [vaultAddr, maxUint256],
+});
+
+// Step 2: deposit into the vault
+const hash = await wallet.writeContract({
+  account,
+  address: vaultAddr,
+  abi: [
+    { name: "deposit", type: "function", stateMutability: "nonpayable",
+      inputs:  [{ name: "assets",   type: "uint256" }, { name: "receiver", type: "address" }],
+      outputs: [{ name: "shares",   type: "uint256" }] },
+  ],
+  functionName: "deposit",
+  args: [amount, account],
+});
+```
+
+## Skipping the approve
+
+If your protocol's token supports [EIP-2612](https://eips.ethereum.org/EIPS/eip-2612) (permit), you can sign a `permit` off-chain and submit it together with the deposit — saving one transaction and one user prompt. See [Permit + deposit pattern](#) (TODO: replace with link to your own snippet).
+
+## Gasless deposits
+
+For onboarding users without ETH, use an ERC-4337 paymaster. The [permissionless.js](https://docs.pimlico.io/permissionless/) bundler integrates with Viem in a few lines and works with most account-abstraction wallets.

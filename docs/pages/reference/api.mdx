@@ -1,0 +1,93 @@
+---
+title: API reference
+description: Auto-generated from contract NatSpec. Edit the source, not this file.
+---
+
+# API reference
+
+> Generated from `contracts/*.sol` via `npm run gen:api`. Do not edit by hand.
+## ExampleVault
+
+A tiny stub used only to drive the auto-generated API reference page. Replace this file with your real contracts when you fork this starter.
+
+### `Deposit`
+
+```solidity
+event Deposit(address indexed sender, address indexed receiver, uint256 assets, uint256 shares)
+```
+
+Emitted on every successful deposit.
+
+**Parameters**
+
+| Name | Description |
+|---|---|
+| `sender` | The address that submitted the deposit transaction. |
+| `receiver` | The address credited with vault shares. |
+| `assets` | Amount of `asset` deposited. |
+| `shares` | Vault shares minted to `receiver`. |
+
+### `deposit`
+
+```solidity
+function deposit(uint256 assets, address receiver) external returns (uint256 shares)
+```
+
+Deposit `assets` of the underlying token in exchange for vault shares.
+
+:::note[Implementation note]
+Caller must have approved the vault to spend `assets` of `asset`.
+:::
+
+**Parameters**
+
+| Name | Description |
+|---|---|
+| `assets` | Amount to deposit, in base units. |
+| `receiver` | Address that will be credited with shares. |
+
+**Returns**
+
+| Name | Description |
+|---|---|
+| `shares` | Number of shares minted to `receiver`. |
+
+### `balanceOf`
+
+```solidity
+function balanceOf(address account) external view returns (uint256 shares)
+```
+
+Vault share balance of `account`.
+
+**Parameters**
+
+| Name | Description |
+|---|---|
+| `account` | The address whose balance to read. |
+
+**Returns**
+
+| Name | Description |
+|---|---|
+| `shares` | Number of vault shares held by `account`. |
+
+### `convertToAssets`
+
+```solidity
+function convertToAssets(uint256 shares) external view returns (uint256 assets)
+```
+
+Convert a shares amount to the underlying assets it represents.
+
+**Parameters**
+
+| Name | Description |
+|---|---|
+| `shares` | Amount of vault shares. |
+
+**Returns**
+
+| Name | Description |
+|---|---|
+| `assets` | Equivalent amount of underlying asset. |

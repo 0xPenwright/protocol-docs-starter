@@ -1,0 +1,49 @@
+# Installation
+
+## Dependencies
+
+```bash
+npm install viem
+```
+
+Optional, but recommended:
+
+| Package | What it gives you |
+|---|---|
+| `wagmi` | React hooks on top of Viem (`useReadContract`, `useWriteContract`, etc.) |
+| `@rainbow-me/rainbowkit` | Drop-in wallet connect UI |
+| `permissionless` | ERC-4337 account abstraction client (for sponsored gas) |
+
+## Configuration
+
+The protocol is deployed on the chains below. Reach a node via your preferred provider — the public RPCs work for development but throttle in production.
+
+| Chain | Chain ID | Vault address | Recommended RPC |
+|---|---|---|---|
+| Base | 8453 | `0xBaseVaultAddressHere` | `https://mainnet.base.org` |
+| Arbitrum One | 42161 | `0xArbVaultAddressHere` | `https://arb1.arbitrum.io/rpc` |
+| Polygon | 137 | `0xPolyVaultAddressHere` | `https://polygon-rpc.com` |
+
+## Boilerplate
+
+A tiny module you can drop into any project:
+
+```ts twoslash
+// _config.ts
+import { createPublicClient, http } from "viem";
+import { base, arbitrum, polygon } from "viem/chains";
+
+export const clients = {
+  base:     createPublicClient({ chain: base,     transport: http() }),
+  arbitrum: createPublicClient({ chain: arbitrum, transport: http() }),
+  polygon:  createPublicClient({ chain: polygon,  transport: http() }),
+};
+
+export const VAULT = {
+  [base.id]:     "0xBaseVaultAddressHere",
+  [arbitrum.id]: "0xArbVaultAddressHere",
+  [polygon.id]:  "0xPolyVaultAddressHere",
+} as const;
+```
+
+That's the full integration surface.

@@ -1,0 +1,48 @@
+# Listen to events
+
+Subscribe to vault `Deposit` events as they're indexed.
+
+```ts twoslash
+// @noErrors
+import { createPublicClient, http, parseAbiItem } from "viem";
+import { base } from "viem/chains";
+
+const client = createPublicClient({ chain: base, transport: http() });
+
+const unwatch = client.watchEvent({
+  address: "0xBaseVaultAddressHere",
+  event: parseAbiItem(
+    "event Deposit(address indexed sender, address indexed receiver, uint256 assets, uint256 shares)"
+  ),
+  poll: true,
+  onLogs: (logs) => {
+    for (const log of logs) {
+      console.log(`Deposit: ${log.args.assets} from ${log.args.sender}`);
+    }
+  },
+});
+
+// Stop listening when you're done
+// unwatch();
+```
+
+## Reading historical events
+
+For one-shot reads (e.g. building a dashboard at page load), use `getContractEvents` over a block range.
+
+```ts twoslash
+// @noErrors
+import { client } from "./_client";
+import { vaultAbi } from "./_abi";
+import { ACME_VAULT } from "./_addresses";
+
+const logs = await client.getContractEvents({
+  address:   ACME_VAULT,
+  abi:       vaultAbi,
+  eventName: "Deposit",
+  fromBlock: 18_000_000n,
+  toBlock:   "latest",
+});
+```
+
+`watchEvent` is for live tails. `getContractEvents` is for historical scans. Combining the two is the standard pattern for indexers.
