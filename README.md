@@ -116,3 +116,5 @@ MIT — see [LICENSE](./LICENSE).
 ---
 
 **Author:** [0xPenwright](https://github.com/0xPenwright) · [@0xPenwright](https://twitter.com/0xPenwright) · solo Web3 engineer, available for protocol docs revamps, integration work, and Solidity contracts.
+
+Payable in USDC / USDT on Ethereum, Polygon, Base, Arbitrum, Optimism → [app.request.finance/create/633560518783137d](https://app.request.finance/create/633560518783137d)
